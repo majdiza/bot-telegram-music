@@ -7,7 +7,8 @@ import sqlite3
 import psutil
 import yt_dlp
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+# Impor JobQueue ditambahkan di sini
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, JobQueue # <-- DIUBAH
 
 # Impor konfigurasi
 from config import TOKEN, ADMIN_IDS, MAX_FILE_SIZE_MB
@@ -160,7 +161,7 @@ async def queue_worker(context: ContextTypes.DEFAULT_TYPE):
     while True:
         if not is_server_busy() and not BUSY_QUEUE.empty():
             request = await BUSY_QUEUE.get()
-            await context.bot.send_message(request['chat_id'], " giliran Anda dari antrian sedang diproses...")
+            await context.bot.send_message(request['chat_id'], "✅ Giliran Anda dari antrian sedang diproses...")
             asyncio.create_task(run_download_and_send(context, **request))
             BUSY_QUEUE.task_done()
         await asyncio.sleep(5) # Cek antrian setiap 5 detik
@@ -169,10 +170,17 @@ async def queue_worker(context: ContextTypes.DEFAULT_TYPE):
 
 def main():
     initialize_database()
-    application = Application.builder().token(TOKEN).build()
+    
+    # Buat instance JobQueue
+    job_queue = JobQueue() # <-- DIUBAH
+    
+    # Pasang job_queue saat membangun aplikasi
+    application = Application.builder().token(TOKEN).job_queue(job_queue).build() # <-- DIUBAH
 
     # Daftarkan background worker
-    application.job_queue.run_once(queue_worker, 0)
+    # job_queue sekarang sudah pasti ada (tidak None)
+    if application.job_queue:
+        application.job_queue.run_once(queue_worker, 0)
 
     # Daftarkan command handlers
     application.add_handler(CommandHandler("start", start_command))
@@ -184,4 +192,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

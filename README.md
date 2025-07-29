@@ -52,39 +52,6 @@ Bot akan mencari dan mengirimkan lagu ke chat Telegram Anda dengan kualitas terb
    API_TOKEN = "TOKEN_ANDA"
    ```
 
----
-
-## ❌ Cara Menghapus atau Menonaktifkan Token
-
-- Cabut token melalui @BotFather:
-  ```
-  /revoke
-  ```
-- Atau hapus manual dari `config.py`:
-  ```python
-  API_TOKEN = ""
-  ```
-
----
-
-## 🚪 Cara Menutup Terminal / Bash
-
-Jika bot sedang berjalan:
-
-```bash
-CTRL + C
-```
-
-Lalu untuk menutup terminal sepenuhnya:
-
-```bash
-exit
-```
-
-Atau tekan `CTRL + D`
-
----
-
 ## 📄 Lisensi
 
 © 2025 Bangjdi

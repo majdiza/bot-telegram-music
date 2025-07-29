@@ -6,7 +6,7 @@ Bot telegram download music sederhana, ringan dan cepat .
 
 ## ✅ Cara Install
 
-Untuk pengguna **Linux**, **VPS**, atau **Termux Android**:
+Untuk pengguna **Linux**, **VPS Linux**, atau **Termux Android**:
 
 ```bash
 sudo apt update && sudo apt upgrade -y

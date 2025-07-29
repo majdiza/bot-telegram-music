@@ -1,6 +1,6 @@
 # Bot Telegram Music 🎵
 
-Bot untuk download lagu dari Telegram dengan kualitas tinggi.
+Bot telegram download music sederhana, ringan dan cepat .
 
 ---
 

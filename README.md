@@ -15,3 +15,12 @@ cd bot-telegram-music
 bash install.sh
 nano config.py  # Masukkan token bot Telegram Anda
 python3 start.py
+
+---
+```bash
+# ini contoh perintah bash
+sudo apt update
+#Cara menggunakan bot
+/music [judul lagu]
+
+contoh: #mudic Noah separuh aku

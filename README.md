@@ -9,7 +9,7 @@ Bot telegram download music sederhana, ringan dan cepat .
 Untuk pengguna **Linux**, **VPS Linux**, atau **Termux Android**:
 
 ```bash
-sudo apt update && sudo apt upgrade -y
+apt update && apt upgrade -y
 git clone https://github.com/majdiza/bot-telegram-music.git
 cd bot-telegram-music
 bash install.sh

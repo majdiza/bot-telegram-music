@@ -7,8 +7,12 @@ import sqlite3
 import psutil
 import yt_dlp
 from telegram import Update
-# Impor JobQueue ditambahkan di sini
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, JobQueue # <-- DIUBAH
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, JobQueue
+
+# --- Impor untuk Keep-Alive ---
+from flask import Flask
+import threading
+# -----------------------------
 
 # Impor konfigurasi
 from config import TOKEN, ADMIN_IDS, MAX_FILE_SIZE_MB
@@ -166,19 +170,39 @@ async def queue_worker(context: ContextTypes.DEFAULT_TYPE):
             BUSY_QUEUE.task_done()
         await asyncio.sleep(5) # Cek antrian setiap 5 detik
 
+
+# --- KODE WEB SERVER UNTUK KEEP-ALIVE ---
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    """Halaman simpel untuk menunjukkan bot aktif."""
+    return "Bot is alive and running!"
+
+def run_web_server():
+    """Menjalankan Flask server."""
+    app.run(host='0.0.0.0', port=8080)
+# ----------------------------------------
+
+
 # --- FUNGSI UTAMA ---
 
 def main():
     initialize_database()
+
+    # Menjalankan web server di thread terpisah agar bot tidak terblokir
+    web_thread = threading.Thread(target=run_web_server)
+    web_thread.daemon = True
+    web_thread.start()
+    logger.info("Keep-alive web server started.")
     
     # Buat instance JobQueue
-    job_queue = JobQueue() # <-- DIUBAH
+    job_queue = JobQueue()
     
     # Pasang job_queue saat membangun aplikasi
-    application = Application.builder().token(TOKEN).job_queue(job_queue).build() # <-- DIUBAH
+    application = Application.builder().token(TOKEN).job_queue(job_queue).build()
 
     # Daftarkan background worker
-    # job_queue sekarang sudah pasti ada (tidak None)
     if application.job_queue:
         application.job_queue.run_once(queue_worker, 0)
 
@@ -189,6 +213,7 @@ def main():
 
     logger.info("✅ Bot telah berhasil dimulai!")
     application.run_polling()
+
 
 if __name__ == "__main__":
     main()
